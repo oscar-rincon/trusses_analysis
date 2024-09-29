@@ -175,77 +175,8 @@ def calc_masa(coords, eles, secciones, densidad):
         longitud = np.linalg.norm(coords[fin, :] - coords[ini, :])
         seccion = secciones[cont]
         vol += seccion * longitud
-    masa = densidad * vol   
+    masa = densidad * vol  
     return masa
-
-def calc_esfuerzos_masa(data):
-    """
-    Calcula los esfuerzos internos y la masa total de una cercha.
-
-    Parámetros:
-    data (dict): Un diccionario que contiene la información de la cercha, incluyendo:
-        - "nodes": Un array de coordenadas de los nodos.
-        - "elements": Un array de elementos que define las conexiones entre nodos.
-        - "mats": Un array de materiales, donde se asume que las secciones transversales están en la columna 1.
-
-    Retorna:
-    tuple: Una tupla que contiene:
-        - esfuerzos (numpy.ndarray): Un array con los esfuerzos internos en los elementos en MPa.
-        - masa (float): La masa total de la cercha en toneladas.
-    """
-    # Extraer los datos necesarios del diccionario
-    nodes = data["nodes"]
-    elements = data["elements"]
-    mats = data["mats"]
-
-    # Realizar el análisis para obtener los desplazamientos
-    disp = analysis(data, verbose=False)
-    
-    # Calcular las fuerzas internas en los elementos
-    esfuerzos = calc_esfuerzos_int(nodes, elements, mats, disp) / 1e6  # Convertir a MPa
-
-    # Calcular la masa total de la cercha
-    masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3  # Convertir a toneladas
-
-    return esfuerzos, masa
-
-
-if __name__ == "__main__":
-    from plane_trusses import analysis
-    nodes = np.array([
-        [8.66, 0.0],
-        [0.0, 5.0],
-        [0.0, 0.0]])
-    cons = np.array([
-        [0, 0],
-        [-1, 0],
-        [-1, -1]], dtype=int)
-    elements = np.array([
-        [0, 2, 0],
-        [0, 0, 1],
-        [0, 1, 2]], dtype=int)
-    loads = np.array([
-        [0.0, -1e6],
-        [0.0, 0.0],
-        [0.0, 0.0]])
-    mats = np.array([
-        [1e9, 0.1]])
-
-    data = {
-        "nodes": nodes,
-        "cons": cons,
-        "elements": elements,
-        "loads": loads,
-        "mats": mats}
-    disp = analysis(data, verbose=True)
-    
-    esfuerzos = calc_esfuerzos_int(nodes, elements, mats, disp)
-
-    plt.figure(figsize=(8, 6))
-    graficar(nodes, elements, alpha=0.4)
-    vis_esfuerzos(nodes, elements, esfuerzos, desp=disp)
-    plt.show()
-
 
 def optimizar_cercha(data):
     """
@@ -267,21 +198,32 @@ def optimizar_cercha(data):
     secciones_iniciales = data["mats"][:, 1]  # Suponiendo que las secciones están en la columna 1
 
     # Definir los límites de masa y esfuerzo
-    max_masa = 10  # 10 toneladas
-    max_esfuerzo = 330  # 330 MPa 
-    epsilon = 1e-3  # Pequeño valor para simular la desigualdad estricta
+    max_masa = 10   # 10 toneladas
+    max_esfuerzo = 330   # 330 MPa 
+    epsilon = 1e-6  # Pequeño valor para simular la desigualdad estricta
 
     # Función objetivo: minimizar la masa total
     def objetivo(secciones):
-        data["mats"][:, 1] = secciones       
-        esfuerzo, masa = calc_esfuerzos_masa(data)  # Usar el diccionario para obtener esfuerzos y masa
+        data["mats"][:, 1] = secciones     
+        nodes = data["nodes"]
+        elements = data["elements"]
+        mats = data["mats"]
+        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3 # Convertir a toneladas
         return masa  # Queremos minimizar la masa
 
     # Función de restricciones
     def restricciones(secciones):
         # Actualizar las secciones en el diccionario
         data["mats"][:, 1] = secciones
-        esfuerzos, masa = calc_esfuerzos_masa(data)
+        nodes = data["nodes"]
+        elements = data["elements"]
+        mats = data["mats"]
+ 
+        # Realizar el análisis para obtener los desplazamientos
+        disp = analysis(data, verbose=False) # desplazamientos en los nodos en x y y [m]        
+        esfuerzos = calc_esfuerzos_int(nodes, elements, mats, disp) / 1e6 # Convertir a MPa
+ 
+        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3 # Convertir a toneladas
         # Restricción de esfuerzos y de masa
         return np.concatenate([
             (max_esfuerzo - esfuerzos - epsilon),  # No más de 330 MPa - epsilon
@@ -306,7 +248,7 @@ def optimizar_cercha(data):
     # Actualizar el diccionario data con las secciones óptimas
     data["mats"][:, 1] = secciones_optimas
 
-    return data, masa_minima  
+    return data, masa_minima
 
 
 def vis_esfuerzos_secciones(coords, eles, esfuerzos, mats, desp=None):
@@ -366,3 +308,38 @@ def vis_esfuerzos_secciones(coords, eles, esfuerzos, mats, desp=None):
     plt.xlim(x.min() - padding, x.max() + padding)
     plt.ylim(y.min() - padding, y.max() + padding)    
     
+if __name__ == "__main__":
+    from plane_trusses import analysis
+    nodes = np.array([
+        [8.66, 0.0],
+        [0.0, 5.0],
+        [0.0, 0.0]])
+    cons = np.array([
+        [0, 0],
+        [-1, 0],
+        [-1, -1]], dtype=int)
+    elements = np.array([
+        [0, 2, 0],
+        [0, 0, 1],
+        [0, 1, 2]], dtype=int)
+    loads = np.array([
+        [0.0, -1e6],
+        [0.0, 0.0],
+        [0.0, 0.0]])
+    mats = np.array([
+        [1e9, 0.1]])
+
+    data = {
+        "nodes": nodes,
+        "cons": cons,
+        "elements": elements,
+        "loads": loads,
+        "mats": mats}
+    disp = analysis(data, verbose=True)
+    
+    esfuerzos = calc_esfuerzos_int(nodes, elements, mats, disp)
+
+    plt.figure(figsize=(8, 6))
+    graficar(nodes, elements, alpha=0.4)
+    vis_esfuerzos(nodes, elements, esfuerzos, desp=disp)
+    plt.show()

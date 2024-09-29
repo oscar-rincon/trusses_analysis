@@ -22,75 +22,88 @@ import numpy as np
 1 - Warren Bridge
 """
 
-# Definir los nodos, restricciones, cargas y elementos del puente Warren
+import numpy as np
+
+# Definir nodos (coordenadas de cada nodo en la cercha)
 warren_bridge_nodes = np.array([
-    [0,  0],
-    [4,  0],
-    [8,  0],
-    [12,  0],
-    [16,  0],
-    [20, 0],
-    [24, 0],
-    [4,  6],
-    [8, 6],
-    [12,  6],
-    [16,  6],
-    [20,  6]])
+    [0.0, 0.0],    # Nodo 0: Soporte izquierdo
+    [4.0, 0.0],    # Nodo 1
+    [8.0, 0.0],    # Nodo 2
+    [12.0, 0.0],   # Nodo 3
+    [16.0, 0.0],   # Nodo 4
+    [20.0, 0.0],   # Nodo 5
+    [24.0, 0.0],   # Nodo 6: Soporte derecho
+    [2.0, 6.0],    # Nodo 7: Nodo superior entre 0 y 1
+    [6.0, 6.0],    # Nodo 8: Nodo superior entre 1 y 2
+    [10.0, 6.0],   # Nodo 9: Nodo superior entre 2 y 3
+    [14.0, 6.0],   # Nodo 10: Nodo superior entre 3 y 4
+    [18.0, 6.0],   # Nodo 11: Nodo superior entre 4 y 5
+    [22.0, 6.0],   # Nodo 12: Nodo superior entre 5 y 6
+])
 
-warren_bridge_constraints = np.array([
-    [0, -1],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [-1, -1],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0]], dtype=int)
+# Definir restricciones (0 = libre, -1 = fijo en esa dirección)
+# [x_constraint, y_constraint] para cada nodo
+warren_bridge_cons = np.array([
+    [0, -1],    # Nodo 0: Fijo en y (Soporte izquierdo)
+    [0, 0],      # Nodo 1: Libre
+    [0, 0],      # Nodo 2: Libre
+    [0, 0],      # Nodo 3: Libre
+    [0, 0],      # Nodo 4: Libre
+    [0, 0],      # Nodo 5: Libre
+    [-1, -1],     # Nodo 6: Fijo en y (Soporte derecho)
+    [0, 0],      # Nodo 7: Libre
+    [0, 0],      # Nodo 8: Libre
+    [0, 0],      # Nodo 9: Libre
+    [0, 0],      # Nodo 10: Libre
+    [0, 0],      # Nodo 11: Libre
+    [0, 0],      # Nodo 12: Libre
+], dtype=int)
 
-warren_bridge_loads = np.array([
-    [0, 0],
-    [0, -400e3],
-    [0, -400e3],
-    [0, -400e3],
-    [0, -400e3],
-    [0, -400e3],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0]])
-
+# Definir elementos (conectividad e índice de propiedades del material)
+# [material_index, start_node, end_node]
 warren_bridge_elements = np.array([
-    [0, 0,  1],
-    [1, 1,  2],
-    [2, 2,  3],
-    [3, 3,  4],
-    [4, 4,  5],
-    [5, 5,  6],
-    [6, 7,  8],
-    [7, 8,  9],
-    [8, 9,  10],
-    [9, 10, 11],
-    [10, 1,  7],
-    [11, 2,  8],
-    [12, 3,  9],
-    [13, 4,  10],
-    [14, 5,  11],
-    [15, 0,  7],
-    [16, 6,  11],
-    [17, 1,  8],
-    [18, 2,  9],
-    [19, 4,  9],
-    [20, 5,  10],
-    [21, 2,  7],
-    [22, 3,  8],
-    [23, 3,  10],
-    [24, 4,  11]], dtype=int)
+    [0, 0, 1],  # Chord inferior entre Nodo 0 y Nodo 1
+    [1, 1, 2],  # Chord inferior entre Nodo 1 y Nodo 2
+    [2, 2, 3],  # Chord inferior entre Nodo 2 y Nodo 3
+    [3, 3, 4],  # Chord inferior entre Nodo 3 y Nodo 4
+    [4, 4, 5],  # Chord inferior entre Nodo 4 y Nodo 5
+    [5, 5, 6],  # Chord inferior entre Nodo 5 y Nodo 6
+    [6, 0, 7],  # Diagonal entre Nodo 0 y Nodo 7
+    [7, 7, 1],  # Diagonal entre Nodo 7 y Nodo 1
+    [8, 1, 8],  # Diagonal entre Nodo 1 y Nodo 8
+    [9, 8, 2],  # Diagonal entre Nodo 8 y Nodo 2
+    [10, 2, 9],  # Diagonal entre Nodo 2 y Nodo 9
+    [11, 9, 3],  # Diagonal entre Nodo 9 y Nodo 3
+    [12, 3, 10], # Diagonal entre Nodo 3 y Nodo 10
+    [13, 10, 4], # Diagonal entre Nodo 10 y Nodo 4
+    [14, 4, 11], # Diagonal entre Nodo 4 y Nodo 11
+    [15, 11, 5], # Diagonal entre Nodo 11 y Nodo 5
+    [16, 5, 12], # Diagonal entre Nodo 5 y Nodo 12
+    [17, 12, 6], # Diagonal entre Nodo 12 y Nodo 6
+    [18, 7, 8],  # Chord superior entre Nodo 7 y Nodo 8
+    [19, 8, 9],  # Chord superior entre Nodo 8 y Nodo 9
+    [20, 9, 10], # Chord superior entre Nodo 9 y Nodo 10
+    [21, 10, 11],# Chord superior entre Nodo 10 y Nodo 11
+    [22, 11, 12],# Chord superior entre Nodo 11 y Nodo 12
+])
+
+# Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
+# [force_x, force_y] para cada nodo
+warren_bridge_loads = np.array([
+    [0.0, 0.0],   # Nodo 0: Sin carga (soporte)
+    [0.0, -400e3],  # Nodo 1: Carga aplicada hacia abajo
+    [0.0, -400e3],  # Nodo 2: Carga aplicada hacia abajo
+    [0.0, -400e3],  # Nodo 3: Carga aplicada hacia abajo
+    [0.0, -400e3],  # Nodo 4: Carga aplicada hacia abajo
+    [0.0, -400e3],  # Nodo 5: Carga aplicada hacia abajo
+    [0.0, 0.0],   # Nodo 6: Sin carga (soporte)
+    [0.0, 0.0],   # Nodo 7: Sin carga
+    [0.0, 0.0],   # Nodo 8: Sin carga
+    [0.0, 0.0],   # Nodo 9: Sin carga
+    [0.0, 0.0],   # Nodo 10: Sin carga
+    [0.0, 0.0],   # Nodo 11: Sin carga
+    [0.0, 0.0],   # Nodo 12: Sin carga
+])
 
 # Inicialización de secciones con el caso más costoso
 warren_bridge_sections = [0.02] * np.shape(warren_bridge_elements)[0]  # Secciones iniciales
@@ -101,9 +114,11 @@ warren_bridge_modulus_of_elasticity = np.ones_like(warren_bridge_sections) * 200
 # Crear un array con los módulos de Young y las secciones transversales
 warren_bridge_materials = np.array([warren_bridge_modulus_of_elasticity, warren_bridge_sections]).T
 
+
+# Preparar el diccionario de datos como se espera en la función de análisis
 warren_bridge_data = {
     "nodes": warren_bridge_nodes,
-    "cons": warren_bridge_constraints,
+    "cons": warren_bridge_cons,
     "elements": warren_bridge_elements,
     "loads": warren_bridge_loads,
     "mats": warren_bridge_materials
