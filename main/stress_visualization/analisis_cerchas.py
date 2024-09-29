@@ -98,7 +98,7 @@ def vis_esfuerzos(coords, eles, esfuerzos, desp=None):
         desp = np.zeros_like(coords)
 
     
-    graficar(coords, eles, desp=None, alpha=0.2)
+    #graficar(coords, eles, desp=None, alpha=0.2)
     
         
     for cont, barra in enumerate(eles[:, 1:]):
@@ -107,7 +107,7 @@ def vis_esfuerzos(coords, eles, esfuerzos, desp=None):
         plt.plot(x[barra] + desp[barra, 0], y[barra] + desp[barra, 1],
                 color=color, lw=3)
         plt.plot(x + desp[:, 0], y + desp[:, 1], lw=0, marker="o",
-             mec="#3c3c3c", mfc="#ffffff")
+             mec="#3c3c3c", mfc="#ffffff", markersize=3.5)
     plt.axis("image")
     # Ajustar los límites de los ejes para que no quede apretada
     padding = 0.1 * max(x.max() - x.min(), y.max() - y.min())
