@@ -7,6 +7,8 @@ Funciones para análisis de cerchas planas.
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+from plane_trusses import analysis
 
 integrantes = {"solución": "Nicolás Guarín-Zapata"}
 
@@ -91,6 +93,7 @@ def vis_esfuerzos(coords, eles, esfuerzos, desp=None):
     desp : ndarray (float), opcional
         Arreglo con los desplazamientos de cada nodo, por defecto None.
     """
+     
     esfuerzo_max = max(-esfuerzos.min(), esfuerzos.max())
     esfuerzo_escalado =  0.5*(esfuerzos + esfuerzo_max)/esfuerzo_max
     x, y = coords.T
@@ -113,7 +116,6 @@ def vis_esfuerzos(coords, eles, esfuerzos, desp=None):
     padding = 0.1 * max(x.max() - x.min(), y.max() - y.min())
     plt.xlim(x.min() - padding, x.max() + padding)
     plt.ylim(y.min() - padding, y.max() + padding)
-
 
 def calc_peso(coords, eles, secciones, densidades):
     """Calcula las cargas debidas al peso de la estructura
@@ -149,32 +151,6 @@ def calc_peso(coords, eles, secciones, densidades):
         cargas[ini] = cargas[ini] + 0.5 * peso
         cargas[fin] = cargas[fin] + 0.5 * peso
     return cargas
-
-def calc_masa(coords, eles, secciones, densidad):
-    """
-    Calcula la masa de una estructura de cercha basada en sus coordenadas, 
-    elementos, áreas de sección transversal y densidad del material.
-
-    Parámetros:
-    coords (numpy.ndarray): Array de coordenadas de los nodos con forma (ncoords, 2).
-    eles (numpy.ndarray): Array de elementos con forma (neles, 3), donde cada fila 
-                          contiene [element_id, nodo_inicial, nodo_final].
-    secciones (numpy.ndarray): Array de áreas de sección transversal para cada elemento.
-    densidad (float): Densidad del material.
-
-    Retorna:
-    float: La masa total de la estructura de cercha.
-    """
-    neles = eles.shape[0]
-    vol = 0
-    for cont in range(neles):
-        ini = eles[cont, 1]
-        fin = eles[cont, 2]
-        longitud = np.linalg.norm(coords[fin, :] - coords[ini, :])
-        seccion = secciones[cont]
-        vol += seccion * longitud
-    masa = densidad * vol   
-    return masa
 
 
 if __name__ == "__main__":
