@@ -150,6 +150,32 @@ def calc_peso(coords, eles, secciones, densidades):
         cargas[fin] = cargas[fin] + 0.5 * peso
     return cargas
 
+def calc_masa(coords, eles, secciones, densidad):
+    """
+    Calcula la masa de una estructura de cercha basada en sus coordenadas, 
+    elementos, áreas de sección transversal y densidad del material.
+
+    Parámetros:
+    coords (numpy.ndarray): Array de coordenadas de los nodos con forma (ncoords, 2).
+    eles (numpy.ndarray): Array de elementos con forma (neles, 3), donde cada fila 
+                          contiene [element_id, nodo_inicial, nodo_final].
+    secciones (numpy.ndarray): Array de áreas de sección transversal para cada elemento.
+    densidad (float): Densidad del material.
+
+    Retorna:
+    float: La masa total de la estructura de cercha.
+    """
+    neles = eles.shape[0]
+    vol = 0
+    for cont in range(neles):
+        ini = eles[cont, 1]
+        fin = eles[cont, 2]
+        longitud = np.linalg.norm(coords[fin, :] - coords[ini, :])
+        seccion = secciones[cont]
+        vol += seccion * longitud
+    masa = densidad * vol   
+    return masa
+
 
 if __name__ == "__main__":
     from plane_trusses import analysis
