@@ -1,3 +1,3 @@
 # Plane trusses analysis
 
-![Esfuerzos en la cercha](/main/vis_esfuerzos/trusses.png)
+![Esfuerzos en la cercha](/main/stress_visualization/figs/trusses.png)
