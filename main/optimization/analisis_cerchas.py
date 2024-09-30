@@ -200,15 +200,12 @@ def optimizar_cercha(data, max_masa=10, max_esfuerzo=330, min_seccion=0.001, max
     """
     # Inicialización de secciones
     secciones_iniciales = data["mats"][:, 1]  # Suponiendo que las secciones están en la columna 1
-    epsilon = 1e-6  # Pequeño valor para simular la desigualdad estricta
 
-    # Función objetivo: minimizar la masa total
     def objetivo(secciones):
         data["mats"][:, 1] = secciones
         nodes = data["nodes"]
         elements = data["elements"]
-        mats = data["mats"]
-        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3  # Convertir a toneladas
+        masa = calc_masa(nodes, elements, secciones, densidad=7800) / 1e3  # Convertir a toneladas 
         return masa  # Queremos minimizar la masa
 
     # Función de restricciones
@@ -223,11 +220,11 @@ def optimizar_cercha(data, max_masa=10, max_esfuerzo=330, min_seccion=0.001, max
         disp = analysis(data, verbose=False)  # desplazamientos en los nodos en x y y [m]
         esfuerzos = calc_esfuerzos_int(nodes, elements, mats, disp) / 1e6  # Convertir a MPa
 
-        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3  # Convertir a toneladas
+        masa = calc_masa(nodes, elements, secciones, densidad=7800) / 1e3  # Convertir a toneladas
         # Restricción de esfuerzos y de masa
         return np.concatenate([
-            (max_esfuerzo - esfuerzos - epsilon),  # No más de 330 MPa - epsilon
-            [max_masa - masa - epsilon]            # No más de 10 toneladas - epsilon
+            (max_esfuerzo - esfuerzos - 1),  # No más de 330 MPa - epsilon
+            [max_masa - masa - 1]            # No más de 10 toneladas - epsilon
         ])
 
     # Definir las restricciones para la optimización
