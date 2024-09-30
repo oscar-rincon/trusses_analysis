@@ -1,3 +1,14 @@
 # Plane trusses optimization
 
-![Puentes_optimizados](figs/optimized_bridges.png)
+ 
+## Bridges
+
+![Puentes optimizados](figs/optimized_bridges.png)
+
+## Roofs
+
+
+![Techos optimizados](figs/optimized_roofs.png)
+
+ 
+

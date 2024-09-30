@@ -706,18 +706,18 @@ howe_roof_cons = np.array([
 # Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
 # [force_x, force_y] para cada nodo
 howe_roof_loads = np.array([
+    [0, -2e3],
     [0, 0],
     [0, 0],
     [0, 0],
     [0, 0],
     [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5]
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3]
 ])
 
 # Definir elementos (conectividad e índice de propiedades del material)
@@ -804,18 +804,18 @@ pratt_roof_cons = np.array([
 # Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
 # [force_x, force_y] para cada nodo
 pratt_roof_loads = np.array([
+    [0, -2e3],
     [0, 0],
     [0, 0],
     [0, 0],
     [0, 0],
     [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5],
-    [0, -10_000e3/5]
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3],
+    [0, -2e3]
 ])
 
 # Definir elementos (conectividad e índice de propiedades del material)
@@ -897,17 +897,17 @@ double_fink_roof_cons = np.array([
 
 # Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
 double_fink_roof_loads = np.array([
-    [0, 0], # Nodo 0: Carga de -2 kN en y
+    [0, -2e3], # Nodo 0: Carga de -2 kN en y
     [0, 0], # Nodo 1: Sin carga
     [0, 0], # Nodo 2: Sin carga
     [0, 0], # Nodo 3: Sin carga
     [0, 0], # Nodo 4: Sin carga
     [0, 0], # Nodo 5: Sin carga
-    [0, -10_000e3/5], # Nodo 6: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 7: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 8: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 9: Carga de -2 kN en y
-    [0, -10_000e3/5],  # Nodo 10: Carga de -2 kN en y
+    [0, -2e3], # Nodo 6: Carga de -2 kN en y
+    [0, -2e3], # Nodo 7: Carga de -2 kN en y
+    [0, -2e3], # Nodo 8: Carga de -2 kN en y
+    [0, -2e3], # Nodo 9: Carga de -2 kN en y
+    [0, -2e3],  # Nodo 10: Carga de -2 kN en y
 ])
 
 # Definir elementos (conectividad e índice de propiedades del material)
@@ -994,21 +994,21 @@ compund_fink_roof_cons = np.array([
 
 # Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
 compund_fink_roof_loads = np.array([
-    [0, 0], # Nodo 0: Carga de -2 kN en y
+    [0, -2e3], # Nodo 0: Carga de -2 kN en y
     [0, 0], # Nodo 1: Sin carga
     [0, 0], # Nodo 2: Sin carga
     [0, 0], # Nodo 3: Sin carga
     [0, 0], # Nodo 4: Sin carga
     [0, 0], # Nodo 5: Sin carga
-    [0, -10_000e3/7], # Nodo 6: Carga de -2 kN en y
-    [0, -10_000e3/7], # Nodo 7: Carga de -2 kN en y
-    [0, -10_000e3/7], # Nodo 8: Carga de -2 kN en y
-    [0, -10_000e3/7], # Nodo 9: Carga de -2 kN en y
-    [0, -10_000e3/7],  # Nodo 10: Carga de -2 kN en y
-    [0, -10_000e3/7],  # Nodo 11: Carga de -2 kN en y
-    [0, -10_000e3/7],  # Nodo 12: Carga de -2 kN en y
-    [0, 0],  # Nodo 13: Carga de -2 kN en y
-    [0, 0],  # Nodo 14: Carga de -2 kN en y
+    [0, -2e3], # Nodo 6: Carga de -2 kN en y
+    [0, -2e3], # Nodo 7: Carga de -2 kN en y
+    [0, -2e3], # Nodo 8: Carga de -2 kN en y
+    [0, -2e3], # Nodo 9: Carga de -2 kN en y
+    [0, -2e3],  # Nodo 10: Carga de -2 kN en y
+    [0, -2e3],  # Nodo 11: Carga de -2 kN en y
+    [0, -2e3],  # Nodo 12: Carga de -2 kN en y
+    [0, -2e3],  # Nodo 13: Carga de -2 kN en y
+    [0, -2e3],  # Nodo 14: Carga de -2 kN en y
 ])
 
 # Definir elementos (conectividad e índice de propiedades del material)
@@ -1091,15 +1091,15 @@ fan_roof_cons = np.array([
 
 # Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
 fan_roof_loads = np.array([
-    [0, 0], # Nodo 0: Carga de -2 kN en y
+    [0, -2e3], # Nodo 0: Carga de -2 kN en y
     [0, 0], # Nodo 1: Sin carga
     [0, 0], # Nodo 2: Sin carga
     [0, 0], # Nodo 3: Sin carga
-    [0, -10_000e3/5], # Nodo 4: Sin carga
-    [0, -10_000e3/5], # Nodo 5: Sin carga
-    [0, -10_000e3/5], # Nodo 6: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 7: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 8: Carga de -2 kN en y
+    [0, -2e3], # Nodo 4: Sin carga
+    [0, -2e3], # Nodo 5: Sin carga
+    [0, -2e3], # Nodo 6: Carga de -2 kN en y
+    [0, -2e3], # Nodo 7: Carga de -2 kN en y
+    [0, -2e3], # Nodo 8: Carga de -2 kN en y
 ])
 
 # Definir elementos (conectividad e índice de propiedades del material)
@@ -1173,16 +1173,16 @@ modified_queen_roof_cons = np.array([
 
 # Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
 modified_queen_roof_loads = np.array([
-    [0, 0], # Nodo 0: Carga de -2 kN en y
+    [0, -2e3], # Nodo 0: Carga de -2 kN en y
     [0, 0], # Nodo 1: Sin carga
     [0, 0], # Nodo 2: Sin carga
     [0, 0], # Nodo 3: Sin carga
-    [0, 0], # Nodo 4: Sin carga
-    [0, -10_000e3/5], # Nodo 5: Sin carga
-    [0, -10_000e3/5], # Nodo 6: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 7: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 8: Carga de -2 kN en y
-    [0, -10_000e3/5], # Nodo 9
+    [0, -2e3], # Nodo 4: Sin carga
+    [0, -2e3], # Nodo 5: Sin carga
+    [0, -2e3], # Nodo 6: Carga de -2 kN en y
+    [0, -2e3], # Nodo 7: Carga de -2 kN en y
+    [0, -2e3], # Nodo 8: Carga de -2 kN en y
+    [0, -2e3], # Nodo 9
 ])
 
 # Definir elementos (conectividad e índice de propiedades del material)

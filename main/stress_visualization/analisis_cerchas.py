@@ -178,20 +178,16 @@ def calc_masa(coords, eles, secciones, densidad):
     masa = densidad * vol  
     return masa
 
-def optimizar_cercha(data, max_masa=10, max_esfuerzo=330, min_seccion=0.001, max_seccion=0.2):
+def optimizar_cercha(data):
     """
     Optimiza las secciones transversales de una cercha para minimizar la masa total,
     asegurando que no se superen los límites de esfuerzo y masa.
 
     Parámetros:
-    data (dict): Un diccionario que contiene la información de la cercha, incluyendo:
+    data (dict): Un diccionario que contiene la información de la cercha, incluyendo por lo menos:
         - "nodes": Un array de coordenadas de los nodos.
         - "elements": Un array de elementos que define las conexiones entre nodos.
         - "mats": Un array de materiales, donde se asume que las secciones transversales están en la columna 1.
-    max_masa (float): La masa máxima permitida en toneladas.
-    max_esfuerzo (float): El esfuerzo máximo permitido en MPa.
-    min_seccion (float): La sección transversal mínima permitida.
-    max_seccion (float): La sección transversal máxima permitida.
 
     Retorna:
     tuple: Una tupla que contiene:
@@ -200,15 +196,19 @@ def optimizar_cercha(data, max_masa=10, max_esfuerzo=330, min_seccion=0.001, max
     """
     # Inicialización de secciones
     secciones_iniciales = data["mats"][:, 1]  # Suponiendo que las secciones están en la columna 1
+
+    # Definir los límites de masa y esfuerzo
+    max_masa = 10   # 10 toneladas
+    max_esfuerzo = 330   # 330 MPa 
     epsilon = 1e-6  # Pequeño valor para simular la desigualdad estricta
 
     # Función objetivo: minimizar la masa total
     def objetivo(secciones):
-        data["mats"][:, 1] = secciones
+        data["mats"][:, 1] = secciones     
         nodes = data["nodes"]
         elements = data["elements"]
         mats = data["mats"]
-        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3  # Convertir a toneladas
+        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3 # Convertir a toneladas
         return masa  # Queremos minimizar la masa
 
     # Función de restricciones
@@ -218,33 +218,33 @@ def optimizar_cercha(data, max_masa=10, max_esfuerzo=330, min_seccion=0.001, max
         nodes = data["nodes"]
         elements = data["elements"]
         mats = data["mats"]
-
+ 
         # Realizar el análisis para obtener los desplazamientos
-        disp = analysis(data, verbose=False)  # desplazamientos en los nodos en x y y [m]
-        esfuerzos = calc_esfuerzos_int(nodes, elements, mats, disp) / 1e6  # Convertir a MPa
-
-        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3  # Convertir a toneladas
+        disp = analysis(data, verbose=False) # desplazamientos en los nodos en x y y [m]        
+        esfuerzos = calc_esfuerzos_int(nodes, elements, mats, disp) / 1e6 # Convertir a MPa
+ 
+        masa = calc_masa(nodes, elements, mats[elements[:, 0], 1], densidad=7800) / 1e3 # Convertir a toneladas
         # Restricción de esfuerzos y de masa
         return np.concatenate([
             (max_esfuerzo - esfuerzos - epsilon),  # No más de 330 MPa - epsilon
-            [max_masa - masa - epsilon]            # No más de 10 toneladas - epsilon
+            [max_masa - masa - epsilon]             # No más de 10 toneladas - epsilon
         ])
 
     # Definir las restricciones para la optimización
     rest = {'type': 'ineq', 'fun': restricciones}
 
     # Definir límites para las secciones
-    bounds = [(min_seccion, max_seccion)] * len(secciones_iniciales)
+    bounds = [(0.001, 0.02)] * len(secciones_iniciales)
 
     # Realizar la optimización
     resultado = minimize(objetivo, secciones_iniciales, constraints=rest, bounds=bounds)
 
     # Obtener las secciones óptimas
     secciones_optimas = resultado.x
-
+    
     # Extraer masa mínima
     masa_minima = resultado.fun
-
+    
     # Actualizar el diccionario data con las secciones óptimas
     data["mats"][:, 1] = secciones_optimas
 
