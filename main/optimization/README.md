@@ -7,7 +7,6 @@
 
 ## Roofs
 
-
 ![Techos optimizados](figs/optimized_roofs.png)
 
  
