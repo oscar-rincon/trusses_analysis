@@ -44,24 +44,6 @@ warren_bridge_nodes = np.array([
     [22.0, 6.0],   # Nodo 12: Nodo superior entre 5 y 6
 ])
 
-# Definir restricciones (0 = libre, -1 = fijo en esa dirección)
-# [x_constraint, y_constraint] para cada nodo
-warren_bridge_cons = np.array([
-    [0, -1],    # Nodo 0: Fijo en y (Soporte izquierdo)
-    [0, 0],      # Nodo 1: Libre
-    [0, 0],      # Nodo 2: Libre
-    [0, 0],      # Nodo 3: Libre
-    [0, 0],      # Nodo 4: Libre
-    [0, 0],      # Nodo 5: Libre
-    [-1, -1],     # Nodo 6: Fijo en y (Soporte derecho)
-    [0, 0],      # Nodo 7: Libre
-    [0, 0],      # Nodo 8: Libre
-    [0, 0],      # Nodo 9: Libre
-    [0, 0],      # Nodo 10: Libre
-    [0, 0],      # Nodo 11: Libre
-    [0, 0],      # Nodo 12: Libre
-], dtype=int)
-
 # Definir elementos (conectividad e índice de propiedades del material)
 # [material_index, start_node, end_node]
 warren_bridge_elements = np.array([
@@ -89,6 +71,24 @@ warren_bridge_elements = np.array([
     [21, 10, 11],# Chord superior entre Nodo 10 y Nodo 11
     [22, 11, 12],# Chord superior entre Nodo 11 y Nodo 12
 ])
+
+# Definir restricciones (0 = libre, -1 = fijo en esa dirección)
+# [x_constraint, y_constraint] para cada nodo
+warren_bridge_cons = np.array([
+    [0, -1],    # Nodo 0: Fijo en y (Soporte izquierdo)
+    [0, 0],      # Nodo 1: Libre
+    [0, 0],      # Nodo 2: Libre
+    [0, 0],      # Nodo 3: Libre
+    [0, 0],      # Nodo 4: Libre
+    [0, 0],      # Nodo 5: Libre
+    [-1, -1],     # Nodo 6: Fijo en y (Soporte derecho)
+    [0, 0],      # Nodo 7: Libre
+    [0, 0],      # Nodo 8: Libre
+    [0, 0],      # Nodo 9: Libre
+    [0, 0],      # Nodo 10: Libre
+    [0, 0],      # Nodo 11: Libre
+    [0, 0],      # Nodo 12: Libre
+], dtype=int)
 
 # Definir cargas (fuerzas aplicadas en cada nodo en direcciones x e y)
 # [force_x, force_y] para cada nodo
