@@ -392,7 +392,7 @@ def double_warren_bridge_data(largo=24.0, alto=6, n=3, seccion=0.02, young=200e9
 
     # Aplicar fuerzas verticales de -carga_total/n en los nodos inferiores (excepto los extremos)
     for i in range(1, n):  # Desde el nodo 1 hasta el nodo n-1 (excluyendo extremos)
-        loads[i, 1] = -carga_total / n  # Fuerza en la dirección y
+        loads[2, 1] = -carga_total / n  # Fuerza en la dirección y
 
     # Inicialización de secciones con el caso más costoso
     sections = [seccion] * np.shape(eles)[0]  # Secciones iniciales
