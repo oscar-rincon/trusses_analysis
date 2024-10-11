@@ -2,8 +2,6 @@
 """
 Funciones para crear análisis de cerchas planas.
 
-@author: Oscar Rincon
-@date: Octubre 2024
 """
 
 import numpy as np
