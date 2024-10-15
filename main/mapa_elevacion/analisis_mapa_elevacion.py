@@ -155,7 +155,7 @@ def graficar_inclinacion(xs, ys, dzdx, dzdy):
     # Configurar etiquetas y título
     plt.xlabel('x (km)')
     plt.ylabel('y (km)')
-    plt.title('Ángulo de Inclinación del Terreno')
+    plt.title('Inclinación')
 
     # Mostrar la gráfica
     plt.show()
