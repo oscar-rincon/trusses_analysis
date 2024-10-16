@@ -6,6 +6,7 @@ Funciones para analizar mapa de elevación.
 """
 
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 # Configuración de estilo para las gráficas
@@ -13,8 +14,16 @@ plt.style.use('fast')
 plt.rcParams['figure.figsize'] = (8, 4)
 plt.rcParams['font.size'] = 8
 plt.rcParams['lines.linewidth'] = 1.5
-plt.rcParams['font.family'] = 'sans-serif'
-
+mpl.rcParams.update(
+    {
+        'interactive': False,
+        "text.usetex": False,  # Use mathtext, not LaTeX
+        "font.family": "serif",
+        "mathtext.fontset": "cm",
+        "axes.formatter.use_mathtext": True,
+        "axes.unicode_minus": False,
+    }
+)
 
 def cargar_datos_elevacion(xs_path, ys_path, zs_path):
     """
@@ -51,28 +60,34 @@ def graficar_elevacion(xs, ys, zs):
     Returns:
         None
     """
+    # Definir los límites de niveles ías de elevación
+    bounds = [1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5]
+
     # Crear la figura y los subplots
     fig = plt.figure(figsize=(10, 3))
 
     # Subplot 1: Gráfica 3D
     ax1 = fig.add_subplot(121, projection='3d')
-    surf = ax1.plot_surface(xs, ys, zs, cmap='viridis')
-    fig.colorbar(surf, ax=ax1, label='Altitud (km)')
-    ax1.set_xlabel('x (km)')
-    ax1.set_ylabel('y (km)')
-    ax1.set_title('Gráfica 3D')
+    surf = ax1.plot_surface(xs, ys, zs, cmap='terrain')
+    # Añadir cuadrícula discontinua
+    ax1.grid(True, linestyle='--')
+
+    fig.colorbar(surf, ax=ax1, label='Altitud [km]')
+    ax1.set_xlabel('x [km]')
+    ax1.set_ylabel('y [km]')
+    ax1.set_title('3D plot - Elevation')
     plt.tight_layout()
 
-    # Subplot 2: Mapa de calor
+    # Subplot 2: Mapa de calor   
     ax2 = fig.add_subplot(122)
-    heatmap = ax2.imshow(zs.T, extent=(np.min(xs), np.max(xs), np.min(ys), np.max(ys)), origin='lower', cmap='viridis')
-    fig.colorbar(heatmap, ax=ax2, label='Altitud (km)')
+    heatmap = ax2.imshow(zs.T, extent=(np.min(xs), np.max(xs), np.min(ys), np.max(ys)), origin='lower', cmap='terrain')
+    plt.contour(xs, ys, zs, levels=bounds, colors='gray', linewidths=0.5)
+    fig.colorbar(heatmap, ax=ax2, label='Altitud [km]')
     ax2.set_xlabel('x (km)')
     ax2.set_ylabel('y (km)')
-    ax2.set_title('Mapa de calor')
+    ax2.set_title('Heat Map - Elevation')
     plt.tight_layout()
     plt.show()
-    return None
 
 def calc_gradiente(zs, xs, ys):
     """
@@ -143,19 +158,25 @@ def graficar_inclinacion(xs, ys, dzdx, dzdy):
 
     # Definir los límites de las categorías de inclinación
     bounds = [0, 15, 30, 45, 60]
-    cmap = plt.get_cmap('viridis', len(bounds) - 1)
+    cmap = plt.get_cmap('RdYlGn_r')
 
     # Graficar el ángulo de inclinación con las categorías
     im = plt.imshow(theta_degrees.T, extent=(np.min(xs), np.max(xs), np.min(ys), np.max(ys)), origin='lower', cmap=cmap, vmin=bounds[0], vmax=bounds[-1])
 
+    # Añadir las líneas de contorno en los límites de las categorías
+    contour = plt.contour(xs, ys, theta_degrees, levels=bounds, colors='gray', linewidths=0.5)
+
     # Añadir una barra de color con las categorías
     cbar = plt.colorbar(im, ticks=bounds)
-    cbar.set_label('Ángulo de inclinación (°)')
+    cbar.set_label('Inclination angle [degrees]')
+
+    # Añadir una cuadrícula con líneas discontinuas
+    #plt.grid(True, linestyle='--', linewidth=0.5)
 
     # Configurar etiquetas y título
-    plt.xlabel('x (km)')
-    plt.ylabel('y (km)')
-    plt.title('Inclinación')
+    plt.xlabel('x [km]')
+    plt.ylabel('y [km]')
+    plt.title('Heatmap - Slopes')
 
     # Mostrar la gráfica
     plt.show()
