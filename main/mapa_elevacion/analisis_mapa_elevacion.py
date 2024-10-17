@@ -14,16 +14,23 @@ plt.style.use('fast')
 plt.rcParams['figure.figsize'] = (8, 4)
 plt.rcParams['font.size'] = 8
 plt.rcParams['lines.linewidth'] = 1.5
-mpl.rcParams.update(
-    {
-        'interactive': False,
-        "text.usetex": False,  # Use mathtext, not LaTeX
-        "font.family": "serif",
-        "mathtext.fontset": "cm",
-        "axes.formatter.use_mathtext": True,
-        "axes.unicode_minus": False,
+pgf_with_latex = {                      # setup matplotlib to use latex for output
+    "pgf.texsystem": "xelatex",        # change this if using xetex or lautex
+    "text.usetex": True,                # use LaTeX to write all text
+    "font.family": "sans-serif",
+    "font.serif": [],
+    "font.sans-serif": ["DejaVu Sans"], # specify the sans-serif font
+    "font.monospace": [],
+    "axes.labelsize": 8,               # LaTeX default is 10pt font.
+    "font.size": 8,
+    "legend.fontsize": 8,               # Make the legend/label fonts a little smaller
+    "xtick.labelsize": 8,
+    "ytick.labelsize": 8,
+    #"figure.figsize": (3.15, 2.17),     # default fig size of 0.9 textwidth
+    "pgf.preamble": r' \usepackage{amsmath},\usepackage{cmbright},\usepackage[utf8x]{inputenc},\usepackage[T1]{fontenc},\usepackage{amssymb},\usepackage{amsfonts},\usepackage{mathastext}',
+        # plots will be generated using this preamble
     }
-)
+mpl.rcParams.update(pgf_with_latex)
 
 def cargar_datos_elevacion(xs_path, ys_path, zs_path):
     """
@@ -75,17 +82,17 @@ def graficar_elevacion(xs, ys, zs):
     fig.colorbar(surf, ax=ax1, label='Altitud [km]')
     ax1.set_xlabel('x [km]')
     ax1.set_ylabel('y [km]')
-    ax1.set_title('3D plot - Elevation')
+    ax1.set_title('Gráfica 3D - Elevación')
     plt.tight_layout()
 
     # Subplot 2: Mapa de calor   
     ax2 = fig.add_subplot(122)
     heatmap = ax2.imshow(zs.T, extent=(np.min(xs), np.max(xs), np.min(ys), np.max(ys)), origin='lower', cmap='terrain')
     plt.contour(xs, ys, zs, levels=bounds, colors='gray', linewidths=0.5)
-    fig.colorbar(heatmap, ax=ax2, label='Altitud [km]')
+    fig.colorbar(heatmap, ax=ax2, label='Elevación [km]')
     ax2.set_xlabel('x (km)')
     ax2.set_ylabel('y (km)')
-    ax2.set_title('Heat Map - Elevation')
+    ax2.set_title('Mapa de calor - Elevación')
     plt.tight_layout()
     plt.show()
 
@@ -168,7 +175,7 @@ def graficar_inclinacion(xs, ys, dzdx, dzdy):
 
     # Añadir una barra de color con las categorías
     cbar = plt.colorbar(im, ticks=bounds)
-    cbar.set_label('Inclination angle [degrees]')
+    cbar.set_label('Ángulo de inclinación [grados]')
 
     # Añadir una cuadrícula con líneas discontinuas
     #plt.grid(True, linestyle='--', linewidth=0.5)
@@ -176,7 +183,7 @@ def graficar_inclinacion(xs, ys, dzdx, dzdy):
     # Configurar etiquetas y título
     plt.xlabel('x [km]')
     plt.ylabel('y [km]')
-    plt.title('Heatmap - Slopes')
+    plt.title('Mapa de calor - Ángulos de inclinación')
 
     # Mostrar la gráfica
     plt.show()
