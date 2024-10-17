@@ -31,10 +31,19 @@ pgf_with_latex = {                      # setup matplotlib to use latex for outp
         # plots will be generated using this preamble
     }
 mpl.rcParams.update(pgf_with_latex)
+from matplotlib.colors import LinearSegmentedColormap
 
-def cargar_datos_elevacion(xs_path, ys_path, zs_path):
+# Define the colors for the gradient (green to brown to white)
+colors = [(0.0, "green"),  # low elevation (green)
+          #(0.5, "#8B4513"),  # middle elevation (neutral brown)
+          (1.0, "#8B4513")]  # high elevation (white)
+
+# Create the colormap
+altitud_cmap = LinearSegmentedColormap.from_list("elevation", colors)
+
+def cargar_datos_altitud(xs_path, ys_path, zs_path):
     """
-    Carga los datos de elevación desde archivos de texto y muestra el tamaño de las matrices.
+    Carga los datos de altitud desde archivos de texto y muestra el tamaño de las matrices.
 
     Args:
         xs_path (str): Ruta al archivo de texto que contiene los datos de xs.
@@ -55,9 +64,9 @@ def cargar_datos_elevacion(xs_path, ys_path, zs_path):
     return xs, ys, zs
 
 
-def graficar_elevacion(xs, ys, zs):
+def graficar_altitud(xs, ys, zs):
     """
-    Crea una figura con dos subplots: una gráfica 3D y un mapa de calor de los datos de elevación.
+    Crea una figura con dos subplots: una gráfica 3D y un mapa de calor de los datos de altitud.
 
     Args:
         xs (numpy.ndarray): Matriz de coordenadas x.
@@ -71,28 +80,28 @@ def graficar_elevacion(xs, ys, zs):
     bounds = [1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5]
 
     # Crear la figura y los subplots
-    fig = plt.figure(figsize=(10, 3))
+    fig = plt.figure(figsize=(12, 3))
 
     # Subplot 1: Gráfica 3D
     ax1 = fig.add_subplot(121, projection='3d')
-    surf = ax1.plot_surface(xs, ys, zs, cmap='terrain')
+    surf = ax1.plot_surface(xs, ys, zs, cmap=altitud_cmap)
     # Añadir cuadrícula discontinua
     ax1.grid(True, linestyle='--')
 
     fig.colorbar(surf, ax=ax1, label='Altitud [km]')
-    ax1.set_xlabel('x [km]')
-    ax1.set_ylabel('y [km]')
-    ax1.set_title('Gráfica 3D - Elevación')
+    ax1.set_xlabel('x [km]', fontsize=8)
+    ax1.set_ylabel('y [km]', fontsize=8)
+    ax1.set_title('Gráfica 3D - Altitud', fontsize=8)
     plt.tight_layout()
 
     # Subplot 2: Mapa de calor   
     ax2 = fig.add_subplot(122)
-    heatmap = ax2.imshow(zs.T, extent=(np.min(xs), np.max(xs), np.min(ys), np.max(ys)), origin='lower', cmap='terrain')
+    heatmap = ax2.imshow(zs.T, extent=(np.min(xs), np.max(xs), np.min(ys), np.max(ys)), origin='lower', cmap=altitud_cmap)
     plt.contour(xs, ys, zs, levels=bounds, colors='gray', linewidths=0.5)
-    fig.colorbar(heatmap, ax=ax2, label='Elevación [km]')
-    ax2.set_xlabel('x (km)')
-    ax2.set_ylabel('y (km)')
-    ax2.set_title('Mapa de calor - Elevación')
+    fig.colorbar(heatmap, ax=ax2, label='Altitud [km]')
+    ax2.set_xlabel('x (km)', fontsize=8)
+    ax2.set_ylabel('y (km)', fontsize=8)
+    ax2.set_title('Mapa de calor - Altitud', fontsize=8)
     plt.tight_layout()
     plt.show()
 
@@ -148,8 +157,8 @@ def graficar_inclinacion(xs, ys, dzdx, dzdy):
     Args:
         xs (numpy.ndarray): Matriz de coordenadas x.
         ys (numpy.ndarray): Matriz de coordenadas y.
-        dzdx (numpy.ndarray): Gradiente de la elevación en la dirección x.
-        dzdy (numpy.ndarray): Gradiente de la elevación en la dirección y.
+        dzdx (numpy.ndarray): Gradiente de la altitud en la dirección x.
+        dzdy (numpy.ndarray): Gradiente de la altitud en la dirección y.
 
     Returns:
         None
@@ -164,8 +173,10 @@ def graficar_inclinacion(xs, ys, dzdx, dzdy):
     theta_degrees = np.degrees(theta)
 
     # Definir los límites de las categorías de inclinación
-    bounds = [0, 15, 30, 45, 60]
+    ticks = [0, 15, 30, 45]
+    bounds = [0,10, 20, 30, 40, 50]
     cmap = plt.get_cmap('RdYlGn_r')
+     
 
     # Graficar el ángulo de inclinación con las categorías
     im = plt.imshow(theta_degrees.T, extent=(np.min(xs), np.max(xs), np.min(ys), np.max(ys)), origin='lower', cmap=cmap, vmin=bounds[0], vmax=bounds[-1])
@@ -174,7 +185,7 @@ def graficar_inclinacion(xs, ys, dzdx, dzdy):
     contour = plt.contour(xs, ys, theta_degrees, levels=bounds, colors='gray', linewidths=0.5)
 
     # Añadir una barra de color con las categorías
-    cbar = plt.colorbar(im, ticks=bounds)
+    cbar = plt.colorbar(im, ticks=ticks)
     cbar.set_label('Ángulo de inclinación [grados]')
 
     # Añadir una cuadrícula con líneas discontinuas
