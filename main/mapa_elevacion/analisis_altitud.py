@@ -200,7 +200,7 @@ def graficar_inclinacion(xs, ys, zs, dzdx, dzdy):
     contour = plt.contour(xs, ys, theta_degrees, 24, colors='gray', linewidths=0.2)
 
     # Añadir una barra de color con las categorías
-    cbar = plt.colorbar(im, ticks=ticks, shrink=0.8)
+    cbar = plt.colorbar(im, ticks=ticks, shrink=0.8, bounds=bounds)
     cbar.set_label('Ángulo de inclinación [grados]')
 
     # Añadir una cuadrícula con líneas discontinuas
